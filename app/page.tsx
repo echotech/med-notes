@@ -26,21 +26,21 @@ export default function Page() {
     },
   });
 
-  const onSubmit = async (e) => {
-    e.preventDefault(); // Prevent the default form submission
-  
-    // Send the disease as plain text directly in the body of the request
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+
+    // Send the disease as JSON in the body of the request
     const response = await fetch('/api/chat/route', {
       method: 'POST',
       headers: {
-        'Content-Type': 'text/plain', // Indicate you're sending plain text in the request
+        'Content-Type': 'application/json', // Indicate you're sending JSON
       },
-      body: disease, // Send the value of the disease state directly as the request body
+      body: JSON.stringify({ disease }), // Send the disease state as JSON
     });
-  
+
     if (response.ok) {
       // Handle the successful response here
-      const notes = await response.text();
+      const notes = await response.json(); // Assuming the response will also be JSON
       // Process or set the state with the notes as needed
     } else {
       // Handle errors here

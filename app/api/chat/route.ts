@@ -15,20 +15,22 @@ export async function POST(req: Request) {
   
     // Buffer the request stream to get the plain text body
     const buffers = [];
-    for await (const chunk of req) {
-      buffers.push(chunk);
-    }
     const soapComponents = ['subjective', 'objective', 'assessment and plan', 'description', 'treatment', 'physical exam'];
-    const disease = Buffer.concat(buffers).toString();
-    const messages = soapComponents.map((component) => ({
-    role: 'user',
-    content: `You are a medical assistant. Your goal is to write the most accurate and professional SOAP notes. Write me a ${component} statement for a soap note for a patient with ${disease}.`
-  }));
+    const { disease } = await req.json();
+    // const messages = soapComponents.map((component) => ({
+    // role: 'user',
+    // content: `You are a medical assistant. Your goal is to write the most accurate and professional SOAP notes. Write me a ${component} statement for a soap note for a patient with ${disease}.`
+  
 
   const response = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',
     stream: true,
-    messages: messages,
+    messages: [
+      {
+        role: 'user',
+        content: `You are a medical assistant. Your goal is to write the most accurate and professional SOAP notes. Write me a ${soapComponents} statement for a soap note for a patient with ${disease}.`
+      }
+    ] 
   });
   
   
