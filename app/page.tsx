@@ -21,6 +21,7 @@ export default function Page() {
 
   useEffect(() => {
     diseaseRef.current = disease;
+    console.log("Disease state updated to:", disease);
   }, [disease]);
 
   const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat({
@@ -31,6 +32,7 @@ export default function Page() {
   });
 
   const handleSubmitWrapper = useCallback((event) => {
+    console.log("Submitting for disease:", diseaseRef.current);
     if (diseaseRef.current) {
       // If there is a disease present, call the original handleSubmit function
       handleSubmit(event);
