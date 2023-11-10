@@ -18,9 +18,9 @@ export default function Page() {
     }
   };
 
-  // Update the useChat hook to use the new disease state
+  
   const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat({
-    body: { disease }, // Only the disease is needed now
+    body: { disease }, 
     onResponse() {
       scrollToNotes();
     },
@@ -50,7 +50,7 @@ export default function Page() {
           <p>Star on GitHub</p>
         </a>
         <h1 className="sm:text-6xl text-4xl max-w-[708px] font-bold text-slate-900">
-          Automate your notes with GPT.
+          Automate your SOAP notes with GPT.
         </h1>
         <form className="max-w-xl w-full" onSubmit={onSubmit}>
           <div className="flex mt-10 items-center space-x-3">
