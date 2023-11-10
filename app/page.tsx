@@ -26,10 +26,28 @@ export default function Page() {
     },
   });
 
-  const onSubmit = (e: any) => {
+  const onSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission
-    handleSubmit(); // Directly call handleSubmit as we are already tracking the disease state
+  
+    // Send the disease as plain text directly in the body of the request
+    const response = await fetch('/api/chat/route', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain', // Indicate you're sending plain text in the request
+      },
+      body: disease, // Send the value of the disease state directly as the request body
+    });
+  
+    if (response.ok) {
+      // Handle the successful response here
+      const notes = await response.text();
+      // Process or set the state with the notes as needed
+    } else {
+      // Handle errors here
+      console.error('Failed to fetch notes');
+    }
   };
+  
 
   // Parse the response to get the generated SOAP notes
   const generatedNotes = messages
