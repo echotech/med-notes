@@ -74,7 +74,7 @@ export default function Page() {
             </p>
           </div>
             <textarea
-            value={disease}
+            value={input}
             onChange={handleInputChange}
             rows={1}
             className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
