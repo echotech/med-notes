@@ -38,7 +38,7 @@ export default function Page() {
   };
 
   const lastMessage = messages[messages.length - 1];
-  const generatedNotes = lastMessage?.role === "assistant" ? lastMessage.content : null;
+  const generatedNote = lastMessage?.role === "assistant" ? lastMessage.content : null;
 
   return (
     <div className="flex max-w-5xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
@@ -118,40 +118,32 @@ export default function Page() {
         />
         <hr className="h-px bg-gray-700 border-1 dark:bg-gray-700" />
         <output className="space-y-10 my-10">
-          {generatedNotes && (
-            <>
-              <div>
-                <h2
-                  className="sm:text-4xl text-3xl font-bold text-slate-900 mx-auto"
-                  ref={notesRef}
-                >
-                  Your generated notes
-                </h2>
-              </div>
-              <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
-                {generatedNotes
-                  .substring(generatedNotes.indexOf('1') + 3)
-                  .split('2.')
-                  .map((generatedNote) => {
-                    return (
-                      <div
-                        className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border"
-                        onClick={() => {
-                          navigator.clipboard.writeText(generatedNote);
-                          toast('Note copied to clipboard', {
-                            icon: '✂️',
-                          });
-                        }}
-                        key={generatedNote}
-                      >
-                        <p>{generatedNote}</p>
-                      </div>
-                    );
-                  })}
-              </div>
-            </>
-          )}
-        </output>
+      {generatedNote && (
+        <>
+          <div>
+            <h2
+              className="sm:text-4xl text-3xl font-bold text-slate-900 mx-auto"
+              ref={notesRef}
+            >
+              Your generated note
+            </h2>
+          </div>
+          <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
+            <div
+              className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border"
+              onClick={() => {
+                navigator.clipboard.writeText(generatedNote);
+                toast('Note copied to clipboard', {
+                  icon: '✂️',
+                });
+              }}
+            >
+              <p>{generatedNote}</p>
+            </div>
+          </div>
+        </>
+      )}
+    </output>
       </main>
       <Footer />
     </div>
