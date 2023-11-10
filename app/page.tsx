@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import Footer from '../components/Footer';
 import Github from '../components/GitHub';
@@ -10,6 +10,7 @@ import { useChat } from 'ai/react';
 
 export default function Page() {
   const [disease, setDisease] = useState('');
+  const diseaseRef = useRef(disease); // Create a ref for the disease state
   const notesRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToNotes = () => {
@@ -18,20 +19,28 @@ export default function Page() {
     }
   };
 
-  
-  const { input, handleInputChange, handleSubmit, isLoading, messages } =
-    useChat({
-      body: {
-        disease
-      },
-      onResponse() {
-        scrollToNotes();
-      },
-    });
+  useEffect(() => {
+    diseaseRef.current = disease;
+  }, [disease]);
 
-  const onSubmit = (e: any) => {
-    setDisease(input);
-    handleSubmit(e);
+  const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat({
+    body: { disease },
+    onResponse() {
+      scrollToNotes();
+    },
+  });
+
+  const handleSubmitWrapper = useCallback((event) => {
+    if (diseaseRef.current) {
+      // If there is a disease present, call the original handleSubmit function
+      handleSubmit(event);
+    }
+  }, [handleSubmit]);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setDisease(input); // Update the disease state
+    handleSubmitWrapper(e); // Use the wrapper function to handle the submission
   };
 
   const lastMessage = messages[messages.length - 1];
