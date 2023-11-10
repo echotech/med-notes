@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import DropDown, { VibeType } from '../components/DropDown';
 import Footer from '../components/Footer';
 import Github from '../components/GitHub';
 import Header from '../components/Header';
@@ -11,7 +10,6 @@ import { useChat } from 'ai/react';
 
 export default function Page() {
   const [disease, setDisease] = useState('');
-  const [vibe, setVibe] = useState<VibeType>('Subjective');
   const notesRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToNotes = () => {
@@ -24,8 +22,7 @@ export default function Page() {
   const { input, handleInputChange, handleSubmit, isLoading, messages } =
     useChat({
       body: {
-        disease,
-        vibe,
+        disease
       },
       onResponse() {
         scrollToNotes();
@@ -80,13 +77,6 @@ export default function Page() {
             className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
             placeholder={'Enter a disease name...'}
             />
-    <div className="flex mb-5 items-center space-x-3">
-            <Image src="/2-black.png" width={30} height={30} alt="1 icon" />
-            <p className="text-left font-medium">Select what you want generated.</p>
-          </div>
-          <div className="block">
-            <DropDown vibe={vibe} setVibe={(newVibe) => setVibe(newVibe)} />
-          </div>
 
           
 
