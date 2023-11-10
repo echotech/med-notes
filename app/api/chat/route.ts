@@ -14,7 +14,7 @@ export const runtime = 'edge';
 export async function POST(req: Request) {
   
     //const soapComponents = ['subjective', 'objective', 'assessment and plan', 'description', 'treatment', 'physical exam'];
-    const { vibe, disease } = await req.json();
+    const { disease } = await req.json();
     
 
   const response = await openai.createChatCompletion({
