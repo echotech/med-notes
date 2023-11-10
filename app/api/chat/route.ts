@@ -23,7 +23,9 @@ export async function POST(req: Request) {
     messages: [
       {
         role: 'user',
-        content: `You are a medical assistant. Your goal is to write the most accurate and professional SOAP notes. Write me a ${vibe} statement for a soap note for a patient with ${disease}.`
+       // content: `You are a medical assistant. Your goal is to write the most accurate and professional SOAP notes. Write me a ${vibe} statement for a soap note for a patient with ${disease}.`
+        content: `You are a medical assistant skilled in creating concise and professional SOAP notes for patient documentation with no unnecessary commentary. Provide a statement for a SOAP note for a patient diagnosed with ${disease}. Include only relevant clinical findings and necessary patient information. Avoid any placeholders and ensure the text is ready for inclusion in medical records. Include only the ${vibe} section.`
+        
       }
     ] 
   });
