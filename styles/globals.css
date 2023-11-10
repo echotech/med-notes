@@ -42,3 +42,12 @@
     opacity: 0.2;
   }
 }
+
+.preformatted-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 80%;
+  margin: 0 auto; /* Center the element */
+  box-sizing: border-box; /* Include padding and border in the element's width */
+}
