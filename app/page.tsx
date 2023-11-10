@@ -12,6 +12,7 @@ export default function Page() {
   const [disease, setDisease] = useState('');
   const diseaseRef = useRef(disease); // Create a ref for the disease state
   const notesRef = useRef<null | HTMLDivElement>(null);
+  const [isReadyForSubmit, setIsReadyForSubmit] = useState(false);
 
   const scrollToNotes = () => {
     if (notesRef.current !== null) {
@@ -26,11 +27,23 @@ export default function Page() {
     },
   });
 
-  const onSubmit = (e: any) => {
-    setDisease(input);
-    console.log("Disease was set to: ", disease)
-    handleSubmit(e);
-  };
+  const submitEventRef = useRef(null);
+
+const onSubmit = (e : any) => {
+  e.preventDefault(); // Prevent the default form submission
+  submitEventRef.current = e; // Store the event
+  setDisease(input); // Set the disease state
+  console.log("Disease was set to:", disease)
+  setIsReadyForSubmit(true); // Set the flag to true
+};
+
+useEffect(() => {
+  // Check if the disease is set and the component is ready for submit
+  if (isReadyForSubmit && disease && submitEventRef.current) {
+    handleSubmit(submitEventRef.current); // Call handleSubmit with the stored event
+    setIsReadyForSubmit(false); // Reset the flag
+  }
+}, [disease, isReadyForSubmit]); 
 
 
   const lastMessage = messages[messages.length - 1];
