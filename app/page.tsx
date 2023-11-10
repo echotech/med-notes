@@ -57,13 +57,7 @@ export default function Page() {
           Automate your SOAP notes with GPT.
         </h1>
         <form className="max-w-xl w-full" onSubmit={onSubmit}>
-        <div className="flex mb-5 items-center space-x-3">
-            <Image src="/2-black.png" width={30} height={30} alt="1 icon" />
-            <p className="text-left font-medium">Select your vibe.</p>
-          </div>
-          <div className="block">
-            <DropDown vibe={vibe} setVibe={(newVibe) => setVibe(newVibe)} />
-          </div>
+        
           <div className="flex mt-10 items-center space-x-3">
             <Image
               src="/1-black.png"
@@ -80,12 +74,19 @@ export default function Page() {
             </p>
           </div>
             <textarea
-    value={disease}
-    onChange={(e) => setDisease(e.target.value)}
-    rows={1}
-    className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
-    placeholder={'Enter a disease name...'}
-    />
+            value={disease}
+            onChange={handleInputChange}
+            rows={1}
+            className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
+            placeholder={'Enter a disease name...'}
+            />
+    <div className="flex mb-5 items-center space-x-3">
+            <Image src="/2-black.png" width={30} height={30} alt="1 icon" />
+            <p className="text-left font-medium">Select what you want generated.</p>
+          </div>
+          <div className="block">
+            <DropDown vibe={vibe} setVibe={(newVibe) => setVibe(newVibe)} />
+          </div>
 
           
 
