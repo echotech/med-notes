@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
+import DropDown, { VibeType } from '../components/DropDown';
 import Footer from '../components/Footer';
 import Github from '../components/GitHub';
 import Header from '../components/Header';
@@ -10,6 +11,7 @@ import { useChat } from 'ai/react';
 
 export default function Page() {
   const [disease, setDisease] = useState('');
+  const [vibe, setVibe] = useState<VibeType>('Subjective');
   const notesRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToNotes = () => {
@@ -19,40 +21,24 @@ export default function Page() {
   };
 
   
-  const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat({
-    body: { disease }, 
-    onResponse() {
-      scrollToNotes();
-    },
-  });
-
-  const onSubmit = async (e: any) => {
-    e.preventDefault();
-
-    // Send the disease as JSON in the body of the request
-    const response = await fetch('/api/chat/route', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', // Indicate you're sending JSON
+  const { input, handleInputChange, handleSubmit, isLoading, messages } =
+    useChat({
+      body: {
+        disease,
+        vibe,
       },
-      body: JSON.stringify({ disease }), // Send the disease state as JSON
+      onResponse() {
+        scrollToNotes();
+      },
     });
 
-    if (response.ok) {
-      // Handle the successful response here
-      const notes = await response.json(); // Assuming the response will also be JSON
-      // Process or set the state with the notes as needed
-    } else {
-      // Handle errors here
-      console.error('Failed to fetch notes');
-    }
+  const onSubmit = (e: any) => {
+    setDisease(input);
+    handleSubmit(e);
   };
-  
 
-  // Parse the response to get the generated SOAP notesa
-  const generatedNotes = messages
-    .filter((message) => message.role === "assistant")
-    .map((message) => message.content);
+  const lastMessage = messages[messages.length - 1];
+  const generatedNotes = lastMessage?.role === "assistant" ? lastMessage.content : null;
 
   return (
     <div className="flex max-w-5xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
@@ -71,6 +57,13 @@ export default function Page() {
           Automate your SOAP notes with GPT.
         </h1>
         <form className="max-w-xl w-full" onSubmit={onSubmit}>
+        <div className="flex mb-5 items-center space-x-3">
+            <Image src="/2-black.png" width={30} height={30} alt="1 icon" />
+            <p className="text-left font-medium">Select your vibe.</p>
+          </div>
+          <div className="block">
+            <DropDown vibe={vibe} setVibe={(newVibe) => setVibe(newVibe)} />
+          </div>
           <div className="flex mt-10 items-center space-x-3">
             <Image
               src="/1-black.png"
@@ -124,34 +117,40 @@ export default function Page() {
         />
         <hr className="h-px bg-gray-700 border-1 dark:bg-gray-700" />
         <output className="space-y-10 my-10">
-      {generatedNotes && (
-        <>
-          <div ref={notesRef}>
-            <h2 className="sm:text-4xl text-3xl font-bold text-slate-900 mx-auto">
-              Your generated notes:
-            </h2>
-          </div>
-          <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
-            {generatedNotes.map((note, index) => {
-              return (
-                <div
-                  className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border"
-                  onClick={() => {
-                    navigator.clipboard.writeText(note);
-                    toast(`Note ${index + 1} copied to clipboard`, {
-                      icon: '✂️',
-                    });
-                  }}
-                  key={note}
+          {generatedNotes && (
+            <>
+              <div>
+                <h2
+                  className="sm:text-4xl text-3xl font-bold text-slate-900 mx-auto"
+                  ref={notesRef}
                 >
-                  <p>{note}</p>
-                </div>
-              );
-            })}
-          </div>
-        </>
-      )}
-    </output>
+                  Your generated notes
+                </h2>
+              </div>
+              <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
+                {generatedNotes
+                  .substring(generatedNotes.indexOf('1') + 3)
+                  .split('2.')
+                  .map((generatedNote) => {
+                    return (
+                      <div
+                        className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border"
+                        onClick={() => {
+                          navigator.clipboard.writeText(generatedNote);
+                          toast('Note copied to clipboard', {
+                            icon: '✂️',
+                          });
+                        }}
+                        key={generatedNote}
+                      >
+                        <p>{generatedNote}</p>
+                      </div>
+                    );
+                  })}
+              </div>
+            </>
+          )}
+        </output>
       </main>
       <Footer />
     </div>

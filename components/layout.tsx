@@ -2,11 +2,11 @@ import { Analytics } from '@vercel/analytics/react';
 import { Metadata } from 'next';
 import '../styles/globals.css';
 
-const title = 'Twitter Bio Generator';
-const description = 'Generate your next Twitter bio in seconds.';
+const title = 'GPT Soap Notes';
+const description = 'Generate your SOAP notes with GPT';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://twitterbio.io'),
+  metadataBase: new URL('https://https://med-notes-4sgy342al-echotech.vercel.app/'),
   title,
   description,
   openGraph: {
