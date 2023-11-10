@@ -33,7 +33,6 @@ const onSubmit = (e : any) => {
   e.preventDefault(); // Prevent the default form submission
   submitEventRef.current = e; // Store the event
   setDisease(input); // Set the disease state
-  console.log("Disease was set to:", disease)
   setIsReadyForSubmit(true); // Set the flag to true
 };
 
