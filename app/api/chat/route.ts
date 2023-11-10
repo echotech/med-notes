@@ -12,11 +12,8 @@ const openai = new OpenAIApi(config);
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
+  const { disease } = await req.json();
   
-    //const soapComponents = ['subjective', 'objective', 'assessment and plan', 'description', 'treatment', 'physical exam'];
-    const { disease } = await req.json();
-    
-
   const response = await openai.createChatCompletion({
     model: 'gpt-4',
     stream: true,
@@ -29,7 +26,6 @@ export async function POST(req: Request) {
       }
     ] 
   });
-  
   
   const stream = OpenAIStream(response);
   // Respond with the stream
