@@ -19,11 +19,6 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    diseaseRef.current = disease;
-    console.log("Disease state updated to:", disease);
-  }, [disease]);
-
   const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat({
     body: { disease },
     onResponse() {
@@ -31,19 +26,12 @@ export default function Page() {
     },
   });
 
-  const handleSubmitWrapper = useCallback((event) => {
-    console.log("Submitting for disease:", diseaseRef.current);
-    if (diseaseRef.current) {
-      // If there is a disease present, call the original handleSubmit function
-      handleSubmit(event);
-    }
-  }, [handleSubmit]);
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    setDisease(input); // Update the disease state
-    handleSubmitWrapper(e); // Use the wrapper function to handle the submission
+  const onSubmit = (e: any) => {
+    setDisease(input);
+    console.log("Disease was set to: ", disease)
+    handleSubmit(e);
   };
+
 
   const lastMessage = messages[messages.length - 1];
   const generatedNote = lastMessage?.role === "assistant" ? lastMessage.content : null;
