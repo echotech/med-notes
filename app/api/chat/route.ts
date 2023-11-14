@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   const { disease } = await req.json();
   let prompt = "What is 2+2?"
   if (typeof disease === 'string' && disease.trim().length > 0) {
-    prompt = `Your task now is to write only the subjective, objective, assessment, disease description, disease treatment, and physical result components of a SOAP note for a patient with ${disease}. Please focus solely on this part and provide information that is directly pertinent to the diagnosis of ${disease}, including any relevant clinical essential details.`;
+    prompt = `Your task now is to write only a SOAP note for a patient with ${disease}. Please provide information that is directly pertinent to the diagnosis of ${disease}, including any relevant clinical essential details.`;
   }
   const response = await openai.createChatCompletion({
     model: 'gpt-4-1106-preview',
