@@ -84,7 +84,7 @@ useEffect(() => {
             }}
             onClick={toggleAccordion}
           >
-            Legal Disclaimer
+            Legal Disclaimer: Click To Expand
           </button>
           {isAccordionOpen && (
             <div style={{ backgroundColor: '#f9f9f9', padding: '15px', border: '1px solid #ddd' }}>
