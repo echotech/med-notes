@@ -187,7 +187,7 @@ useEffect(() => {
               }}
             >
               
-        <pre className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border preformatted-text" style={{ maxWidth: '100%', margin: 'auto' }}>
+        <pre className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border preformatted-text" style={{ maxWidth: '100%', margin: 'auto', textAlign: 'left' }}>
           {generatedNote}
         </pre>
       
