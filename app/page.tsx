@@ -41,7 +41,7 @@ const onSubmit = (e : any) => {
   setIsReadyForSubmit(true); // Set the flag to true
 };
 
-const copyToClipboard = async (text) => {
+const copyToClipboard = async (text : string) => {
   if ('clipboard' in navigator) {
     return await navigator.clipboard.writeText(text)
   } else {
@@ -62,7 +62,7 @@ useEffect(() => {
   const lastMessage = messages[messages.length - 1];
   const generatedNote = lastMessage?.role === "assistant" ? lastMessage.content : null;
 
-  const transformNote = (note) => {
+  const transformNote = (note : string) => {
     const noteSections = note.split(/\n(?=[A-Z][a-z]+\:)/); 
     return noteSections;
   };
