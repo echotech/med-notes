@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { Toaster, toast } from 'react-hot-toast';
 import Footer from '../components/Footer';
 import Github from '../components/GitHub';
@@ -42,6 +41,15 @@ const onSubmit = (e : any) => {
   setIsReadyForSubmit(true); // Set the flag to true
 };
 
+const copyToClipboard = async (text) => {
+  if ('clipboard' in navigator) {
+    return await navigator.clipboard.writeText(text)
+  } else {
+    return document.execCommand('copy', true, text)
+  }
+}
+
+
 useEffect(() => {
   // Check if the disease is set and the component is ready for submit
   if (isReadyForSubmit && disease && submitEventRef.current) {
@@ -53,6 +61,13 @@ useEffect(() => {
 
   const lastMessage = messages[messages.length - 1];
   const generatedNote = lastMessage?.role === "assistant" ? lastMessage.content : null;
+
+  const transformNote = (note) => {
+    const noteSections = note.split(/\n(?=[A-Z][a-z]+\:)/); 
+    return noteSections;
+  };
+  // Then, add this additional line to transform the GPT output into sections:
+  const transformedNote = generatedNote && transformNote(generatedNote); 
 
   return (
     <div className="flex max-w-5xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
@@ -167,35 +182,34 @@ useEffect(() => {
         />
         <hr className="h-px bg-gray-700 border-1 dark:bg-gray-700" />
         <output className="space-y-10 my-10">
-      {generatedNote && (
-        <>
-          <div>
-            <h2
-              className="sm:text-4xl text-3xl font-bold text-slate-900 mx-auto"
-              ref={notesRef}
-            >
-              Your generated note
-            </h2>
-          </div>
-          <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
-            <div
-              className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border"
-              onClick={() => {
-                navigator.clipboard.writeText(generatedNote);
-                toast('Note copied to clipboard', {
-                  icon: '✂️',
-                });
-              }}
-            >
-              
-        <pre className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border preformatted-text" style={{ maxWidth: '100%', margin: 'auto', textAlign: 'left' }}>
-          {generatedNote}
-        </pre>
-      
-            </div>
-          </div>
-        </>
-      )}
+        {transformedNote && (
+    <>
+      <div>
+        <h2
+          className="sm:text-4xl text-3xl font-bold text-slate-900 mx-auto"
+          ref={notesRef}
+        >
+          Your generated Note
+        </h2>
+      </div>
+      <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
+          {transformedNote.map((section, idx) => (
+
+              <div key={idx} className="relative p-2 border border-gray-300 shadow-lg mt-5">
+                  <pre className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border preformatted-text" style={{ maxWidth: '100%', margin: 'auto', textAlign: 'left' }}>
+                      {section}
+                  </pre>
+                  
+                  <button onClick={() => copyToClipboard(section)} className="absolute top-2 right-2 bg-blue-500 text-white rounded p-2 hover:bg-blue-700 cursor-pointer">
+                      Copy
+                  </button>
+              </div>
+          ))}
+      </div>
+    </>
+)}
+
+            
     </output>
       </main>
       <Footer />
