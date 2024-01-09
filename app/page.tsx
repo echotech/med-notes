@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { Toaster, toast } from 'react-hot-toast';
 import Footer from '../components/Footer';
 import Github from '../components/GitHub';
