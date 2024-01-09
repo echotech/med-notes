@@ -63,7 +63,7 @@ useEffect(() => {
   const generatedNote = lastMessage?.role === "assistant" ? lastMessage.content : null;
 
   const transformNote = (note : string) => {
-    const noteSections = note.split(/\n(?=[A-Z][a-z]+\:)/); 
+    const noteSections = note.split(/(?<=[a-z]\.)(?=[A-Z][a-z]+\:)/); 
     return noteSections;
   };
   // Then, add this additional line to transform the GPT output into sections:
