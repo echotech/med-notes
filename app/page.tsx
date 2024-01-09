@@ -63,7 +63,8 @@ useEffect(() => {
   const generatedNote = lastMessage?.role === "assistant" ? lastMessage.content : null;
 
   const transformNote = (note : string) => {
-    const noteSections = note.split("<br />");
+    // Split the note into sections wherever <sep /> appears
+    const noteSections = note.split("<sep />");
     return noteSections;
   };
   
