@@ -85,7 +85,7 @@ useEffect(() => {
           <p>Star on GitHub</p>
         </a>
         <h1 className="sm:text-6xl text-4xl max-w-[708px] font-bold text-slate-900">
-          Automate your SOAP notes with GPT.
+          (Beta) Automate your SOAP notes with GPT.
         </h1>
         {/* Accordion for Legal Disclaimer */}
         <div style={{ width: '100%', marginTop: '20px' }}>
