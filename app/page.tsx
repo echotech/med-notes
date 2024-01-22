@@ -202,9 +202,9 @@ useEffect(() => {
                       {section}
                   </pre>
                   
-                  <-- <button onClick={() => copyToClipboard(section)} className="absolute top-2 right-2 bg-blue-500 text-white rounded p-2 hover:bg-blue-700 cursor-pointer">
+                  <button onClick={() => copyToClipboard(section)} className="absolute top-2 right-2 bg-blue-500 text-white rounded p-2 hover:bg-blue-700 cursor-pointer">
                       Copy
-                  </button> -->
+                  </button>
               </div>
           ))}
       </div>
