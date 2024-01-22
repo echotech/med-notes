@@ -85,7 +85,7 @@ useEffect(() => {
           <p>Star on GitHub</p>
         </a>
         <h1 className="sm:text-6xl text-4xl max-w-[708px] font-bold text-slate-900">
-          (Beta) Automate your SOAP notes with GPT.
+          (Beta) Ask a Hospitalist.
         </h1>
         {/* Accordion for Legal Disclaimer */}
         <div style={{ width: '100%', marginTop: '20px' }}>
@@ -151,7 +151,7 @@ useEffect(() => {
             onChange={handleInputChange}
             rows={1}
             className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
-            placeholder={'Enter a disease name...'}
+            placeholder={'Enter a condition, multiple conditions, or ask the hospitalist a question...'}
             />
 
           
