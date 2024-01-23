@@ -85,7 +85,7 @@ useEffect(() => {
           <p>Star on GitHub</p>
         </a>
         <h1 className="sm:text-6xl text-4xl max-w-[708px] font-bold text-slate-900">
-          (Beta) Ask a Hospitalist.
+          (Beta) Hitchhiker's Guide to Medicine.
         </h1>
         {/* Accordion for Legal Disclaimer */}
         <div style={{ width: '100%', marginTop: '20px' }}>
