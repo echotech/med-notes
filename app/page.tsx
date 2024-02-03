@@ -14,6 +14,22 @@ export default function Page() {
   const notesRef = useRef<null | HTMLDivElement>(null);
   const [isReadyForSubmit, setIsReadyForSubmit] = useState(false);
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState('');
+
+  // Options for different roles with a placeholder for selection
+const roleOptions = {
+  '': 'Select your role...',
+  'emergency_room_physician': 'Emergency Room Physician',
+  'ambulatory_physician': 'Ambulatory Physician',
+  'inpatient_physician': 'Inpatient Physician',
+  'general_physician': 'General Physician',
+  // Add any other roles you require
+};
+
+// Update onChange handler for the dropdown
+const handleRoleChange = (e) => {
+  setSelectedRole(e.target.value);
+}
 
   const toggleAccordion = () => {
     setIsAccordionOpen(!isAccordionOpen);
@@ -26,20 +42,19 @@ export default function Page() {
   };
 
   const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat({
-    body: { disease },
+    body: { disease, role: selectedRole },
     onResponse() {
       scrollToNotes();
     },
   });
 
-  const submitEventRef = useRef(null);
+  const onSubmit = (e : any) => {
+    e.preventDefault();
+    submitEventRef.current = e;
+    setIsReadyForSubmit(true); 
+  };
 
-const onSubmit = (e : any) => {
-  e.preventDefault(); // Prevent the default form submission
-  submitEventRef.current = e; // Store the event
-  setDisease(input); // Set the disease state
-  setIsReadyForSubmit(true); // Set the flag to true
-};
+  const submitEventRef = useRef(null);
 
 const copyToClipboard = async (text : string) => {
   if ('clipboard' in navigator) {
@@ -130,6 +145,20 @@ useEffect(() => {
           )}
         </div>
         <form className="max-w-xl w-full" onSubmit={onSubmit}>
+          <div className="flex mt-10 items-center space-x-3">
+          <select
+  value={selectedRole}
+  onChange={handleRoleChange}
+  className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
+>
+  {Object.entries(roleOptions).map(([value, label]) => (
+    <option key={value} value={value}>
+      {label}
+    </option>
+  ))}
+</select>
+
+          </div>
         
           <div className="flex mt-10 items-center space-x-3">
             <Image
