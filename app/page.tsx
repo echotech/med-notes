@@ -27,7 +27,7 @@ export default function Page() {
   };
 
   // Update onChange handler for the dropdown
-  const handleRoleChange = (e) => {
+  const handleRoleChange = (e : any) => {
     setSelectedRole(e.target.value);
   };
 
