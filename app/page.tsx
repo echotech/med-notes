@@ -53,6 +53,7 @@ export default function Page() {
     e.preventDefault();
     console.log("Submitted: ", e)
     submitEventRef.current = e;
+    diseaseRef.current = input;
     setIsReadyForSubmit(true);
   };
 
@@ -67,8 +68,9 @@ export default function Page() {
   };
 
   useEffect(() => {
-    // Check if the disease is set and the component is ready for submit
-    if (isReadyForSubmit && disease && submitEventRef.current) {
+  console.log(`Is ready: ${isReadyForSubmit}, Disease: ${disease}`);
+  if (isReadyForSubmit && disease && submitEventRef.current) {
+    console.log('Handling submit...');
       handleSubmit(submitEventRef.current); // Call handleSubmit with the stored event
       setIsReadyForSubmit(false); // Reset the flag
     }
