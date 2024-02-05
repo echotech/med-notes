@@ -51,6 +51,7 @@ export default function Page() {
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    console.log("Submitted: ", e)
     submitEventRef.current = e;
     setIsReadyForSubmit(true);
   };
