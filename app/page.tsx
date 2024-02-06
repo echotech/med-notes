@@ -51,7 +51,8 @@ export default function Page() {
 
   const onSubmit = (e: any) => {
     e.preventDefault();
-    console.log("Submitted: ", e)
+    console.log("Disease:", input); 
+    console.log("Role:", selectedRole);
     submitEventRef.current = e;
     diseaseRef.current = input;
     setIsReadyForSubmit(true);
@@ -68,13 +69,27 @@ export default function Page() {
   };
 
   useEffect(() => {
-  console.log(`Is ready: ${isReadyForSubmit}, Disease: ${disease}`);
-  if (isReadyForSubmit && disease && submitEventRef.current) {
-    console.log('Handling submit...');
-      handleSubmit(submitEventRef.current); // Call handleSubmit with the stored event
-      setIsReadyForSubmit(false); // Reset the flag
-    }
-  }, [disease, isReadyForSubmit]);
+    const fetchData = async () => {
+      if (isReadyForSubmit && disease) {
+        try {
+          const result = await fetch('path-to-your-api', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ disease, role: selectedRole }),
+          });
+          const data = await result.json();
+          // Handle the response data, updating the state or UI as necessary
+        } catch (error) {
+          console.error('There was an error submitting the form: ', error);
+          toast.error('Error generating notes.');
+        }
+      }
+    };
+  
+    fetchData();
+  }, [isReadyForSubmit, disease, selectedRole]);
 
   const lastMessage = messages[messages.length - 1];
   const generatedNote =
