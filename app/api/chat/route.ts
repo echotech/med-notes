@@ -12,8 +12,10 @@ const openai = new OpenAIApi(config);
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
-
   const { disease, role } = await req.json();
+  console.log("RouteDisease:", disease);
+  console.log("RouteRole:", role);
+
   let systemMessageContent = "Respond with: 'If you're seeing this message, you have encountered an error. Please contact the developer and tell them SYSTEM_MESSAGE_NOT_SET.'";
 
 switch (role) {
