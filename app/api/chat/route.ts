@@ -12,7 +12,17 @@ const openai = new OpenAIApi(config);
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
-  const { disease, role } = await req.json();
+  const requestBody = await req.json();
+  
+  // Assuming the message is stored in a property named 'combinedMessage'
+  const combinedMessage = requestBody.combinedMessage;
+
+  // Parse the combined message
+  let [, disease, , role] = combinedMessage.split(/disease: (.*?), role: (.*)/);
+
+  disease = disease?.trim();
+  role = role?.trim();
+
   console.log("RouteDisease:", disease);
   console.log("RouteRole:", role);
 
