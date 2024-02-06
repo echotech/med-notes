@@ -1,6 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai-edge';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 
 // Create an OpenAI API client (that's edge friendly!)
@@ -9,16 +9,16 @@ const config = new Configuration({
 });
 const openai = new OpenAIApi(config);
 
-// Set the runtime to edge for best performance
-export const runtime = 'edge';
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+ if (req.method !== 'POST') {
+   res.setHeader('Allow', 'POST');
+   return res.status(405).end(`Method ${req.method} Not Allowed`);
+ }
 
-
-export default async function handler(req: NextRequest) {
-  if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
-  }
-
-  const { disease, role } = await req.json(); // Extract disease and role directly
+ const { disease, role } = req.body;
 
   console.log("RouteDisease:", disease);
   console.log("RouteRole:", role);
