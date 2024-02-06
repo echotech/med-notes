@@ -49,14 +49,34 @@ export default function Page() {
       },
     });
 
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    console.log("Disease:", input); 
-    console.log("Role:", selectedRole);
-    submitEventRef.current = e;
-    diseaseRef.current = input;
-    setIsReadyForSubmit(true);
-  };
+    const onSubmit = async (e : any) => {
+      e.preventDefault();
+    
+      const dataToSend = {
+        disease: input,
+        role: selectedRole,
+      };
+    
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataToSend),
+        });
+    
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        
+        // Do something with the response if needed, like updating UI
+      } catch (error) {
+        console.error('Error submitting form: ', error);
+        toast.error('Error generating notes.');
+      } 
+    };
+    
 
   const submitEventRef = useRef(null);
 

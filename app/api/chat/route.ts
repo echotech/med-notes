@@ -1,5 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai-edge';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
+import { NextRequest, NextResponse } from 'next/server';
 
 
 // Create an OpenAI API client (that's edge friendly!)
@@ -11,17 +12,13 @@ const openai = new OpenAIApi(config);
 // Set the runtime to edge for best performance
 export const runtime = 'edge';
 
-export async function POST(req: Request) {
-  const requestBody = await req.json();
-  
-  // Assuming the message is stored in a property named 'combinedMessage'
-  const combinedMessage = requestBody.combinedMessage;
 
-  // Parse the combined message
-  let [, disease, , role] = combinedMessage.split(/disease: (.*?), role: (.*)/);
+export default async function handler(req: NextRequest) {
+  if (req.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405 });
+  }
 
-  disease = disease?.trim();
-  role = role?.trim();
+  const { disease, role } = await req.json(); // Extract disease and role directly
 
   console.log("RouteDisease:", disease);
   console.log("RouteRole:", role);
