@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import Footer from "../components/Footer";
 import Github from "../components/GitHub";
@@ -9,12 +9,19 @@ import Header from "../components/Header";
 import { useChat } from "ai/react";
 
 export default function Page() {
+  interface ChatMessage {
+    id: string;
+    role: 'user' | 'assistant';
+    content: string;
+  }
+
   const [disease, setDisease] = useState("");
   const diseaseRef = useRef(disease); // Create a ref for the disease state
   const notesRef = useRef<null | HTMLDivElement>(null);
   const [isReadyForSubmit, setIsReadyForSubmit] = useState(false);
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
+  const [notes, setNotes] = useState<ChatMessage[]>([]);
 
   // Options for different roles with a placeholder for selection
   const roleOptions = {
@@ -30,6 +37,13 @@ export default function Page() {
   const handleRoleChange = (e : any) => {
     setSelectedRole(e.target.value);
   };
+
+  // Frontend code snippet that listens to SSE
+const eventSource = new EventSource('/api/chat');
+eventSource.onmessage = function(event) {
+  const data = JSON.parse(event.data);
+  // Update your UI with the data received from the server
+};
 
   const toggleAccordion = () => {
     setIsAccordionOpen(!isAccordionOpen);
@@ -49,35 +63,6 @@ export default function Page() {
       },
     });
 
-    const onSubmit = async (e : any) => {
-      e.preventDefault();
-    
-      const dataToSend = {
-        disease: input,
-        role: selectedRole,
-      };
-    
-      try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dataToSend),
-        });
-    
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        
-        // Do something with the response if needed, like updating UI
-      } catch (error) {
-        console.error('Error submitting form: ', error);
-        toast.error('Error generating notes.');
-      } 
-    };
-    
-
   const submitEventRef = useRef(null);
 
   const copyToClipboard = async (text: string) => {
@@ -89,27 +74,40 @@ export default function Page() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (isReadyForSubmit && disease) {
-        try {
-          const result = await fetch('path-to-your-api', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ disease, role: selectedRole }),
-          });
-          const data = await result.json();
-          // Handle the response data, updating the state or UI as necessary
-        } catch (error) {
-          console.error('There was an error submitting the form: ', error);
-          toast.error('Error generating notes.');
-        }
-      }
+    const eventSource = new EventSource('/api/chat');
+
+    eventSource.onmessage = function(event) {
+      const newMessage: ChatMessage = JSON.parse(event.data);
+      setNotes(prevNotes => [...prevNotes, newMessage]);
     };
-  
-    fetchData();
-  }, [isReadyForSubmit, disease, selectedRole]);
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    const dataToSend = { disease: input, role: selectedRole };
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // No need to do anything here, as the message will be streamed back and handled by the SSE connection.
+    } catch (error) {
+      console.error('Error submitting form: ', error);
+      toast.error('Error generating notes.');
+    } 
+  };
 
   const lastMessage = messages[messages.length - 1];
   const generatedNote =
@@ -126,7 +124,7 @@ export default function Page() {
 
   return (
     <div className="flex max-w-5xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
-      <Header />
+    <Header />
       <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-12 sm:mt-20">
         <a
           className="flex max-w-fit items-center justify-center space-x-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm text-gray-600 shadow-md transition-colors hover:bg-gray-100 mb-5"
@@ -315,46 +313,35 @@ export default function Page() {
           toastOptions={{ duration: 2000 }}
         />
         <hr className="h-px bg-gray-700 border-1 dark:bg-gray-700" />
-        <output className="space-y-10 my-10">
-          {transformedNote && (
-            <>
-              <div>
-                <h2
-                  className="sm:text-4xl text-3xl font-bold text-slate-900 mx-auto"
-                  ref={notesRef}
-                >
-                  Your generated Note
-                </h2>
-              </div>
-              <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
-                {transformedNote.map((section, idx) => (
-                  <div
-                    key={idx}
-                    className="relative p-2 border border-gray-300 shadow-lg mt-5"
-                  >
-                    <pre
-                      className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border preformatted-text"
-                      style={{
-                        maxWidth: "100%",
-                        margin: "auto",
-                        textAlign: "left",
-                      }}
-                    >
-                      {section}
-                    </pre>
+        
+      <output className="space-y-10 my-10">
+        {transformedNote && (
+          <>
+            <div>
+              <h2 className="sm:text-4xl text-3xl font-bold text-slate-900 mx-auto" ref={notesRef}>
+                Your generated Note
+              </h2>
+            </div>
+            <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
+              {transformedNote.map((section, idx) => (
+                // ... your existing note section ...
+              ))}
+            </div>
+          </>
+        )}
 
-                    <button
-                      onClick={() => copyToClipboard(section)}
-                      className="absolute top-2 right-2 bg-blue-500 text-white rounded p-2 hover:bg-blue-700 cursor-pointer"
-                    >
-                      Copy
-                    </button>
-                  </div>
-                ))}
+        {/* Additional rendering of notes received from SSE */}
+        {notes.map((note, idx) => (
+          <div key={idx} className="chat-message">
+            {note.role === 'assistant' ? ( /* Update the condition based on how you want to differentiate user vs assistant messages */
+              <div className="assistant-message"> {/* Update classNames as needed */}
+                <span>Assistant:</span>
+                <p>{note.content}</p>
               </div>
-            </>
-          )}
-        </output>
+            ) : ( /* This is where you would handle messages with role: "user", if needed */ )}
+          </div>
+        ))}
+      </output>
       </main>
       <Footer />
     </div>
