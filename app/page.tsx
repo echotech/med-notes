@@ -74,16 +74,19 @@ export default function Page() {
   };
 
   useEffect(() => {
-    const eventSource = new EventSource('/api/chat');
+    if (typeof window !== 'undefined') {
+      const eventSource = new EventSource('/api/chat');
 
-    eventSource.onmessage = function(event) {
-      const newMessage: ChatMessage = JSON.parse(event.data);
-      setNotes(prevNotes => [...prevNotes, newMessage]);
-    };
+      eventSource.onmessage = function(event) {
+        const newMessage: ChatMessage = JSON.parse(event.data);
+        setNotes(prevNotes => [...prevNotes, newMessage]);
+      };
 
-    return () => {
-      eventSource.close();
-    };
+      // Specify how to clean up after the effect
+      return () => {
+        eventSource.close();
+      };
+    }
   }, []);
 
   const onSubmit = async (e : any) => {
