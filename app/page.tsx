@@ -39,11 +39,11 @@ export default function Page() {
   };
 
   // Frontend code snippet that listens to SSE
-const eventSource = new EventSource('/api/chat');
-eventSource.onmessage = function(event) {
-  const data = JSON.parse(event.data);
-  // Update your UI with the data received from the server
-};
+  const eventSource = new EventSource('/api/chat');
+  eventSource.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    // Update your UI with the data received from the server
+  };
 
   const toggleAccordion = () => {
     setIsAccordionOpen(!isAccordionOpen);
@@ -86,7 +86,7 @@ eventSource.onmessage = function(event) {
     };
   }, []);
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e : any) => {
     e.preventDefault();
 
     const dataToSend = { disease: input, role: selectedRole };
@@ -124,7 +124,7 @@ eventSource.onmessage = function(event) {
 
   return (
     <div className="flex max-w-5xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
-    <Header />
+      <Header />
       <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-12 sm:mt-20">
         <a
           className="flex max-w-fit items-center justify-center space-x-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm text-gray-600 shadow-md transition-colors hover:bg-gray-100 mb-5"
@@ -323,24 +323,30 @@ eventSource.onmessage = function(event) {
               </h2>
             </div>
             <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
-              {transformedNote.map((section, idx) => (
-                // ... your existing note section ...
+               {transformedNote.map((section, idx) => (
+
+                  <div key={idx} className="relative p-2 border border-gray-300 shadow-lg mt-5">
+                      <pre className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border preformatted-text" style={{ maxWidth: '100%', margin: 'auto', textAlign: 'left' }}>
+                          {section}
+                      </pre>
+                      
+                      <button onClick={() => copyToClipboard(section)} className="absolute top-2 right-2 bg-blue-500 text-white rounded p-2 hover:bg-blue-700 cursor-pointer">
+                          Copy
+                      </button>
+                  </div>
               ))}
+              
             </div>
           </>
         )}
 
-        {/* Additional rendering of notes received from SSE */}
-        {notes.map((note, idx) => (
-          <div key={idx} className="chat-message">
-            {note.role === 'assistant' ? ( /* Update the condition based on how you want to differentiate user vs assistant messages */
-              <div className="assistant-message"> {/* Update classNames as needed */}
-                <span>Assistant:</span>
-                <p>{note.content}</p>
-              </div>
-            ) : ( /* This is where you would handle messages with role: "user", if needed */ )}
+      {notes.map((note, idx) => (
+        <div key={idx} className="note">
+          <div className="assistant-message"> {/* Adjust this class name as needed */}
+            <p>{note.content}</p>
           </div>
-        ))}
+        </div>
+      ))}
       </output>
       </main>
       <Footer />

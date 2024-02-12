@@ -8,7 +8,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 // Edge function to handle incoming POST requests and stream chat responses
-export default async function handler(req, res) {
+export default async function handler(req : any, res : any) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).end('Method Not Allowed');
