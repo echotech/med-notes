@@ -12,9 +12,11 @@ const openai = new OpenAIApi(config);
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
-  const textInput = await req.text(); // Get the stringified JSON text from the request
+  const textInput = await req.body(); // Get the stringified JSON text from the request
   console.log(textInput)
-  const { disease, physician_type } = JSON.parse(textInput); // Parse it as JSON
+  const { disease: disease, physician_type: physician_type } = JSON.parse(textInput);
+  console.log('Disease Backend: ' + disease)
+  console.log('Physician Type Backend: ' + physician_type)
   const systemMessageContent = getSystemMessage(physician_type)
   let prompt =  "Respond with: 'If you're seeing this message, you have encountered an error. Please contact the developer and tell them PROMPT_NOT_SET.'";
   if (typeof disease === 'string' && disease.trim().length > 0) {
