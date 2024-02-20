@@ -15,8 +15,9 @@ let systemMessageContent;
 
 export async function POST(req: Request) {
   const textInput = await req.text(); // Get the stringified JSON text from the request
-  console.log(req.text)
+  console.log(textInput)
   const { disease, role } = JSON.parse(textInput); // Parse it as JSON
+  const systemMessageContent = getSystemMessage(role)
   let prompt =  "Respond with: 'If you're seeing this message, you have encountered an error. Please contact the developer and tell them PROMPT_NOT_SET.'";
   if (typeof disease === 'string' && disease.trim().length > 0) {
     prompt = `Your task now is to write only a SOAP note for a patient with ${disease}. Please provide information that is directly pertinent to the diagnosis of ${disease}, including any relevant clinical essential details.`;
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
     messages: [
       {
         role: 'system',
-        content: getSystemMessage(role)
+        content: systemMessageContent
       },
       {
         role: 'user',
