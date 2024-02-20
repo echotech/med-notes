@@ -12,7 +12,7 @@ const openai = new OpenAIApi(config);
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
-  const textInput = await req.body(); // Get the stringified JSON text from the request
+  const textInput = await req.text(); // Get the stringified JSON text from the request
   console.log(textInput)
   const { disease: disease, physician_type: physician_type } = JSON.parse(textInput);
   console.log('Disease Backend: ' + disease)
