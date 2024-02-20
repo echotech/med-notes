@@ -3,9 +3,9 @@
 import Image from 'next/image';
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import Footer from '../components/Footer';
-import Github from '../components/GitHub';
-import Header from '../components/Header';
+import Footer from '../../components/Footer';
+import Github from '../../components/GitHub';
+import Header from '../../components/Header';
 import { useChat } from 'ai/react';
 
 export default function Page() {
@@ -26,7 +26,6 @@ export default function Page() {
   };
 
   const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat({
-    api:"../app/api/chat",
     body: { disease },
     onResponse() {
       scrollToNotes();
