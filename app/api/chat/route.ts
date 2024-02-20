@@ -15,6 +15,7 @@ let systemMessageContent;
 
 export async function POST(req: Request) {
   const textInput = await req.text(); // Get the stringified JSON text from the request
+  console.log(req.text)
   const { disease, role } = JSON.parse(textInput); // Parse it as JSON
   let prompt =  "Respond with: 'If you're seeing this message, you have encountered an error. Please contact the developer and tell them PROMPT_NOT_SET.'";
   if (typeof disease === 'string' && disease.trim().length > 0) {

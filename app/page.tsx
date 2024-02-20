@@ -48,6 +48,8 @@ export default function Page() {
 const onSubmit = (e : any) => {
   e.preventDefault(); // Prevent the default form submission
   const messageObject = { disease: input, role: selectedRole };
+  console.log("role is: " + selectedRole)
+  console.log("Message object: " + messageObject)
   const messageString = JSON.stringify(messageObject);
   submitEventRef.current = e; // Store the event
   setDisease(messageString); // Set the disease state
@@ -145,15 +147,15 @@ useEffect(() => {
         <form className="max-w-xl w-full" onSubmit={onSubmit}>
           <div className="flex mt-10 items-center space-x-3">
              {/* Dropdown for selecting the role */}
-        <select
-          value={selectedRole}
-          onChange={(e) => setSelectedRole(e.target.value)}
-          className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
-        >
-          {Object.entries(roleOptions).map(([value, label]) => (
-            <option key={value} value={value}>{label}</option>
-          ))}
-        </select>
+             <select
+  value={selectedRole}
+  onChange={(e) => setSelectedRole(e.target.value)}
+  className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
+>
+  {Object.entries(roleOptions).map(([value, label]) => (
+    <option key={value} value={value}>{label}</option>
+  ))}
+</select>
           </div>
 
           <div className="flex mt-10 items-center space-x-3">
