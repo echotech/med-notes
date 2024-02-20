@@ -48,11 +48,10 @@ export default function Page() {
 const onSubmit = (e : any) => {
   e.preventDefault(); // Prevent the default form submission
   const messageObject = { disease: input, role: selectedRole };
-  console.log("role is: " + selectedRole)
-  console.log("Message object: " + messageObject)
   const messageString = JSON.stringify(messageObject);
   submitEventRef.current = e; // Store the event
   setDisease(messageString); // Set the disease state
+  console.log("Message object: " + messageString)
   setIsReadyForSubmit(true); // Set the flag to true
 };
 
