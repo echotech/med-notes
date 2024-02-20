@@ -29,7 +29,8 @@ export default function Page() {
     body: { disease },
     onResponse() {
       scrollToNotes();
-    }, api: `../app/api/chat`
+    },
+    api: '../app/api/chat',
   });
 
   const submitEventRef = useRef(null);
