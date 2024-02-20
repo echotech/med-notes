@@ -29,7 +29,7 @@ export default function Page() {
     body: { disease },
     onResponse() {
       scrollToNotes();
-    }, api: { 'api/chat' }
+    },
   });
 
   const submitEventRef = useRef(null);
@@ -85,7 +85,7 @@ useEffect(() => {
           <p>Star on GitHub</p>
         </a>
         <h1 className="sm:text-6xl text-4xl max-w-[708px] font-bold text-slate-900">
-          (Beta) Mikes's Guide to Medicine.
+          (Beta) Hitchhiker's Guide to Medicine.
         </h1>
         {/* Accordion for Legal Disclaimer */}
         <div style={{ width: '100%', marginTop: '20px' }}>
