@@ -26,11 +26,11 @@ export default function Page() {
   };
 
   const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat({
+    api:"../app/api/chat",
     body: { disease },
     onResponse() {
       scrollToNotes();
     },
-    api: '../app/api/chat',
   });
 
   const submitEventRef = useRef(null);
