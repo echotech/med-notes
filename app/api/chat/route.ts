@@ -14,10 +14,10 @@ export const runtime = 'edge';
 export async function POST(req: Request) {
   const textInput = await req.text(); // Get the stringified JSON text from the request
   const requestBody = JSON.parse(textInput)
-  console.log(textInput)
+  //console.log(textInput)
   const { disease, physician_type} = JSON.parse(requestBody.disease);
-  console.log('Disease Backend: ' + disease)
-  console.log('Physician Type Backend: ' + physician_type)
+  //console.log('Disease Backend: ' + disease)
+  //console.log('Physician Type Backend: ' + physician_type)
   const systemMessageContent = getSystemMessage(physician_type)
   let prompt =  "Respond with: 'If you're seeing this message, you have encountered an error. Please contact the developer and tell them PROMPT_NOT_SET.'";
   if (typeof disease === 'string' && disease.trim().length > 0) {

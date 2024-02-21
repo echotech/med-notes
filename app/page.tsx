@@ -54,7 +54,7 @@ const onSubmit = (e : any) => {
   const messageString = JSON.stringify(messageObject);
   submitEventRef.current = e; // Store the event
   setDisease(messageString); // Set the disease state
-  console.log("Message object: " + messageString)
+  //console.log("Message object: " + messageString)
   setIsReadyForSubmit(true); // Set the flag to true
 };
 
