@@ -13,8 +13,9 @@ export const runtime = 'edge';
 
 export async function POST(req: Request) {
   const textInput = await req.text(); // Get the stringified JSON text from the request
+  const requestBody = JSON.parse(textInput)
   console.log(textInput)
-  const { disease, physician_type} = JSON.parse(textInput);
+  const { disease, physician_type} = JSON.parse(requestBody.disease);
   console.log('Disease Backend: ' + disease)
   console.log('Physician Type Backend: ' + physician_type)
   const systemMessageContent = getSystemMessage(physician_type)
