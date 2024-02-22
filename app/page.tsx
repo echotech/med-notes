@@ -37,7 +37,7 @@ export default function Page() {
 
    // Roles for dropdown
    const physician_type_options = {
-    "": "Select your role...",
+    "": "Select your specialty...",
     "emergency_room_physician": "Emergency Room Physician",
     "inpatient_physician": "Inpatient Physician",
     "ambulatory_physician": "Ambulatory Physician",
