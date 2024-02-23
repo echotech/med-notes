@@ -14,6 +14,7 @@ export default function Page() {
   const notesRef = useRef<null | HTMLDivElement>(null);
   const [isReadyForSubmit, setIsReadyForSubmit] = useState(false);
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+  const [selectedPhysicianType, setSelectedPhysicianType] = useState('');
 
   const toggleAccordion = () => {
     setIsAccordionOpen(!isAccordionOpen);
@@ -34,10 +35,26 @@ export default function Page() {
 
   const submitEventRef = useRef(null);
 
+   // Roles for dropdown
+   const physician_type_options = {
+    "": "Select your specialty...",
+    "emergency_room_physician": "Emergency Room Physician",
+    "inpatient_physician": "Inpatient Physician",
+    "ambulatory_physician": "Ambulatory Physician",
+    "general_physician": "General Physician",
+    // ... other roles
+  };
+
 const onSubmit = (e : any) => {
   e.preventDefault(); // Prevent the default form submission
+  const messageObject = {
+    disease: input, // input from your text field for disease
+    physician_type: selectedPhysicianType, // value from your dropdown for role
+  };
+  const messageString = JSON.stringify(messageObject);
   submitEventRef.current = e; // Store the event
-  setDisease(input); // Set the disease state
+  setDisease(messageString); // Set the disease state
+  //console.log("Message object: " + messageString)
   setIsReadyForSubmit(true); // Set the flag to true
 };
 
@@ -130,7 +147,19 @@ useEffect(() => {
           )}
         </div>
         <form className="max-w-xl w-full" onSubmit={onSubmit}>
-        
+          <div className="flex mt-10 items-center space-x-3">
+             {/* Dropdown for selecting the physician type */}
+             <select
+  value={selectedPhysicianType}
+  onChange={(e) => setSelectedPhysicianType(e.target.value)}
+  className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
+>
+  {Object.entries(physician_type_options).map(([value, label]) => (
+    <option key={value} value={value}>{label}</option>
+  ))}
+</select>
+          </div>
+
           <div className="flex mt-10 items-center space-x-3">
             <Image
               src="/1-black.png"
@@ -140,21 +169,16 @@ useEffect(() => {
               className="mb-5 sm:mb-0"
             />
             <p className="text-left font-medium">
-              Enter a disease{' '}
-              <span className="text-slate-500">
-              </span>
-              .
+              Enter a disease <span className="text-slate-500"></span>.
             </p>
           </div>
-            <textarea
+          <textarea
             value={input}
             onChange={handleInputChange}
             rows={1}
             className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
-            placeholder={'Enter a disease name...'}
-            />
-
-          
+            placeholder={"Enter a disease name..."}
+          />
 
           {!isLoading && (
             <button
@@ -170,9 +194,9 @@ useEffect(() => {
               disabled
             >
               <span className="loading">
-                <span style={{ backgroundColor: 'white' }} />
-                <span style={{ backgroundColor: 'white' }} />
-                <span style={{ backgroundColor: 'white' }} />
+                <span style={{ backgroundColor: "white" }} />
+                <span style={{ backgroundColor: "white" }} />
+                <span style={{ backgroundColor: "white" }} />
               </span>
             </button>
           )}
