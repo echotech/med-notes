@@ -102,7 +102,7 @@ useEffect(() => {
           <p>Star on GitHub</p>
         </a>
         <h1 className="sm:text-6xl text-4xl max-w-[708px] font-bold text-slate-900">
-          Automate your SOAP notes with GPT.
+          Meducation 101.
         </h1>
         {/* Accordion for Legal Disclaimer */}
         <div style={{ width: '100%', marginTop: '20px' }}>
@@ -185,7 +185,7 @@ useEffect(() => {
               className="bg-black rounded-xl text-white font-medium px-4 py-2 sm:mt-10 mt-8 hover:bg-black/80 w-full"
               type="submit"
             >
-              Generate your notes &rarr;
+              Start your learning! &rarr;
             </button>
           )}
           {isLoading && (
