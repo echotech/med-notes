@@ -1,18 +1,23 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Toaster, toast } from 'react-hot-toast';
+import React, { useState, useRef, useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 import Footer from '../components/Footer';
 import Github from '../components/GitHub';
 import Header from '../components/Header';
-import { useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
+
+function getMessageText(message: { parts: Array<{ type: string; text?: string }> }): string {
+  return message.parts
+    .filter((part): part is { type: 'text'; text: string } => part.type === 'text')
+    .map((part) => part.text)
+    .join('');
+}
 
 export default function Page() {
-  const [disease, setDisease] = useState('');
-  const diseaseRef = useRef(disease); // Create a ref for the disease state
+  const [inputValue, setInputValue] = useState('');
   const notesRef = useRef<null | HTMLDivElement>(null);
-  const [isReadyForSubmit, setIsReadyForSubmit] = useState(false);
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [selectedPhysicianType, setSelectedPhysicianType] = useState('');
 
@@ -26,67 +31,56 @@ export default function Page() {
     }
   };
 
-  const { input, handleInputChange, handleSubmit, isLoading, messages } = useChat({
-    body: { disease },
-    onResponse() {
-      scrollToNotes();
-    },
-  });
+  const { sendMessage, status, messages } = useChat();
 
-  const submitEventRef = useRef(null);
+  const isLoading = status === 'streaming' || status === 'submitted';
 
    // Roles for dropdown
-   const physician_type_options = {
+   const physician_type_options: Record<string, string> = {
     "": "Select your specialty...",
     "emergency_room_physician": "Emergency Room Physician",
     "inpatient_physician": "Inpatient Physician",
     "ambulatory_physician": "Ambulatory Physician",
     "general_physician": "General Physician",
-    // ... other roles
   };
 
-const onSubmit = (e : any) => {
-  e.preventDefault(); // Prevent the default form submission
-  const messageObject = {
-    disease: input, // input from your text field for disease
-    physician_type: selectedPhysicianType, // value from your dropdown for role
+  // Scroll to notes when streaming starts
+  useEffect(() => {
+    if (status === 'streaming') {
+      scrollToNotes();
+    }
+  }, [status]);
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const messageObject = {
+      disease: inputValue,
+      physician_type: selectedPhysicianType,
+    };
+    const messageString = JSON.stringify(messageObject);
+    sendMessage(
+      { text: inputValue },
+      { body: { disease: messageString } }
+    );
   };
-  const messageString = JSON.stringify(messageObject);
-  submitEventRef.current = e; // Store the event
-  setDisease(messageString); // Set the disease state
-  //console.log("Message object: " + messageString)
-  setIsReadyForSubmit(true); // Set the flag to true
-};
 
-const copyToClipboard = async (text : string) => {
-  if ('clipboard' in navigator) {
-    return await navigator.clipboard.writeText(text)
-  } else {
-    return document.execCommand('copy', true, text)
-  }
-}
-
-
-useEffect(() => {
-  // Check if the disease is set and the component is ready for submit
-  if (isReadyForSubmit && disease && submitEventRef.current) {
-    handleSubmit(submitEventRef.current); // Call handleSubmit with the stored event
-    setIsReadyForSubmit(false); // Reset the flag
-  }
-}, [disease, isReadyForSubmit]); 
-
+  const copyToClipboard = async (text: string) => {
+    if ('clipboard' in navigator) {
+      return await navigator.clipboard.writeText(text);
+    } else {
+      return document.execCommand('copy', true, text);
+    }
+  };
 
   const lastMessage = messages[messages.length - 1];
-  const generatedNote = lastMessage?.role === "assistant" ? lastMessage.content : null;
+  const generatedNote = lastMessage?.role === 'assistant' ? getMessageText(lastMessage) : null;
 
-  const transformNote = (note : string) => {
-    // Split the note into sections wherever <sep /> appears
-    const noteSections = note.split("<sep />");
+  const transformNote = (note: string) => {
+    const noteSections = note.split('<sep />');
     return noteSections;
   };
-  
-  // Then, add this additional line to transform the GPT output into sections:
-  const transformedNote = generatedNote && transformNote(generatedNote); 
+
+  const transformedNote = generatedNote && transformNote(generatedNote);
 
   return (
     <div className="flex max-w-5xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
@@ -173,8 +167,8 @@ useEffect(() => {
             </p>
           </div>
           <textarea
-            value={input}
-            onChange={handleInputChange}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
             rows={1}
             className="w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black my-5"
             placeholder={"Enter a disease name..."}
@@ -215,7 +209,7 @@ useEffect(() => {
           className="sm:text-4xl text-3xl font-bold text-slate-900 mx-auto"
           ref={notesRef}
         >
-          
+
         </h2>
       </div>
       <div className="space-y-8 flex flex-col items-center justify-center max-w-xl mx-auto">
@@ -225,7 +219,7 @@ useEffect(() => {
                   <pre className="bg-white rounded-xl shadow-md p-4 hover:bg-gray-100 transition cursor-copy border preformatted-text" style={{ maxWidth: '100%', margin: 'auto', textAlign: 'left' }}>
                       {section}
                   </pre>
-                  
+
                   <button onClick={() => copyToClipboard(section)} className="absolute top-2 right-2 bg-blue-500 text-white rounded p-2 hover:bg-blue-700 cursor-pointer">
                       Copy
                   </button>
@@ -235,7 +229,7 @@ useEffect(() => {
     </>
 )}
 
-            
+
     </output>
       </main>
       <Footer />
