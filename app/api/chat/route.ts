@@ -4,10 +4,27 @@ import { streamText } from 'ai';
 // Set the runtime to edge for best performance
 export const runtime = 'edge';
 
+// A diagnosis name is short. Anything longer is either a mistake or an attempt to
+// run up token cost on our API key, so reject it before calling the model.
+const MAX_DISEASE_LENGTH = 500;
+
 export async function POST(req: Request) {
-  const body = await req.json();
-  const { disease, physician_type } = JSON.parse(body.disease);
-  const systemMessageContent = getSystemMessage(physician_type);
+  let disease: unknown;
+  let physician_type: unknown;
+  try {
+    const body = await req.json();
+    ({ disease, physician_type } = JSON.parse(body.disease));
+  } catch {
+    return new Response('Invalid request body', { status: 400 });
+  }
+
+  if (typeof disease === 'string' && disease.length > MAX_DISEASE_LENGTH) {
+    return new Response('Disease name is too long', { status: 400 });
+  }
+
+  const systemMessageContent = getSystemMessage(
+    typeof physician_type === 'string' ? physician_type : ''
+  );
   let prompt = "Respond with: 'If you're seeing this message, you have encountered an error. Please contact the developer and tell them PROMPT_NOT_SET.'";
   if (typeof disease === 'string' && disease.trim().length > 0) {
     prompt = `Your task now is to write only a SOAP note for a patient with ${disease}. Please provide information that is directly pertinent to the diagnosis of ${disease}, including any relevant clinical essential details.`;
